@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+	<head>
+<style>
+{% include 'assets/css/style.css' %}
+{% include 'assets/js/pagedown/demo/browser/demo.css' %}
+</style>
+<script type="text/javascript">
+{% include 'assets/js/jquery-1.8.3.min.js' %}
+
+{% include 'assets/js/pagedown/Markdown.Converter.js' %}
+{% include 'assets/js/pagedown/Markdown.Sanitizer.js' %}
+{% include 'assets/js/pagedown/Markdown.Editor.js' %}
+</script>
+<script>
+var data = {{ allpages | tojson | safe }};
+
+function edit() {
+	$('#content').hide();
+	$('textarea#wmd-input').html(data['main']);
+	ed = new Markdown.Editor(new Markdown.getSanitizingConverter());
+	ed.run();
+	$('#editor').show()
+}
+
+$(function() {
+	$('#editor').hide();
+	var page = data['main'];
+	if(page==undefined)
+		page = data[Object.keys(data)[0]];
+	var conv = new Markdown.getSanitizingConverter();
+	$('#content').html(conv.makeHtml(page));
+});
+</script>
+	</head>
+	<body>
+		<div id="content">
+		</div>
+		<div id="editor">
+			<div class="wmd-panel">
+				<div id="wmd-button-bar"></div>
+				<textarea class="wmd-input" id="wmd-input"></textarea>
+			</div>
+			<div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+		</div>
+	</body>
+</html>
+
