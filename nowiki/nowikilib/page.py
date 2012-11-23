@@ -18,12 +18,14 @@ class Page:
     def set(cls, slug, content):
         '''Set the content of the page to content. If it does not exists,
         raises ValueError'''
-        raise NotImplementedError()
+        if not cls.exists(slug):
+            raise ValueError('page not found')
+        return cls.db.set(slug, content)
 
     @classmethod
     def create(cls, slug):
         '''Create a page. Returns True if it didn't already exist, else False'''
-        raise NotImplementedError()
+        cls.db.create(slug)
 
     @classmethod
     def exists(cls, slug):

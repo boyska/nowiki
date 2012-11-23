@@ -1,6 +1,6 @@
 import sys
 
-from flask import Flask, abort, jsonify, render_template
+from flask import Flask, abort, jsonify, render_template, request
 sys.path.append('..')
 from nowikilib.page import Page
 #from nowikilib import page
@@ -23,9 +23,26 @@ def get_page(name):
     except:
         abort(404)
 
-@app.route("/page/<name>", methods=['POST'])
+@app.route("/page/<name>", methods=['PUT'])
 def set_page(name):
-    raise NotImplementedError()
+    if not Page.exists(name):
+        abort(404)
+    content = request.form['content']
+    #TODO: sanitize!
+    Page.set(name, content)
+    return 'ok'
+
+
+@app.route("/page/", methods=['POST'])
+def new_page():
+    name = request.form['slug']
+    if Page.exists(name):
+        abort(405) #method not allowed
+    content = request.form['content']
+    page = Page(name, content)
+    page.save()
+    return 'ok'
+
 
 Page.config('../data/') #TODO: fix this uglyness
 if __name__ == '__main__':
