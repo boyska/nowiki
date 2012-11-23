@@ -13,35 +13,25 @@
 {% include 'assets/js/pagedown/Markdown.Editor.js' %}
 </script>
 <script>
-var data = {{ allpages | tojson | safe }};
-
-function edit() {
-	$('#content').hide();
-	$('textarea#wmd-input').html(data['main']);
-	ed = new Markdown.Editor(new Markdown.getSanitizingConverter());
-	ed.run();
-	$('#editor').show()
-}
-
-$(function() {
-	$('#editor').hide();
-	var page = data['main'];
-	if(page==undefined)
-		page = data[Object.keys(data)[0]];
-	var conv = new Markdown.getSanitizingConverter();
-	$('#content').html(conv.makeHtml(page));
-});
+{% include 'index.js' %}
+Pages.data = {{ allpages | tojson | safe }};
 </script>
 	</head>
 	<body>
-		<div id="content">
-		</div>
-		<div id="editor">
-			<div class="wmd-panel">
-				<div id="wmd-button-bar"></div>
-				<textarea class="wmd-input" id="wmd-input"></textarea>
+		<nav id="nav">
+			<ul id="pagelist">
+			</ul>
+		</nav>
+		<div id="page">
+			<div id="content">
 			</div>
-			<div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+			<div id="editor">
+				<div class="wmd-panel">
+					<div id="wmd-button-bar"></div>
+					<textarea class="wmd-input" id="wmd-input"></textarea>
+				</div>
+				<div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+			</div>
 		</div>
 	</body>
 </html>
