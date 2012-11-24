@@ -75,28 +75,31 @@ View.prototype.switch_mode = function(mode) {
 }
 
 Controller = function() {
-	this.view = new View($('body'), Pages);
-	if(window.location.hash == "")
-		this.change_page();
-	else
-		this.change_page(window.location.hash)
+	this.view = new View($('#page'), Pages);
 }
 Controller.prototype.change_page = function(name) {
 	if(arguments.length == 0)
 		name = Pages.getDefaultPage();
 	window.location.hash = name;
+	if(!Pages.hasPage(name))
+		//TODO: goto 404
+		return;
 	this.view.goto_page(name);
 }
 $(function() {
-	app = new Controller()
-	window.addEventListener('hashchange', function(){
-	  console.log('the hash has changed' + window.location.hash);
-	  app.change_page(window.location.hash);
-	})
 	//TODO: make better nav
 	for(var i=0; i<Pages.getPages().length; i++) {
 		name = Pages.getPages()[i];
 		$('#pagelist').append('<li><a href="#' + name + '">' + name + '</a></li>');
 	}
+	app = new Controller();
+	if(window.location.hash == "")
+		app.change_page();
+	else
+		app.change_page(window.location.hash.substring(1));
+	window.addEventListener('hashchange', function(){
+	  app.change_page(window.location.hash.substring(1));
+	})
 });
 
+// vim: set fdm=indent:
