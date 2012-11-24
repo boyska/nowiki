@@ -40,6 +40,9 @@ var View = function(elem, model) {
 	this.currentpage = model.getDefaultPage();
 	this.conv = new Markdown.getSanitizingConverter();
 	var ed = new Markdown.Editor(this.conv);
+	this.conv.hooks.chain("postConversion", function (text) {
+			return text.replace(/\[\[([a-z_]*)\]\]/gi, '<a href="#$1">$1</a>');
+	});
 	ed.run()
 }
 View.prototype.refresh = function() {
