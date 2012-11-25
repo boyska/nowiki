@@ -49,4 +49,4 @@ class FlatDB(object):
     def delete(self, key):
         if not FlatDB.is_valid_key(key):
             raise ValueError()
-        os.remove(os.path.join(self.path, key), 'r')
+        os.remove(os.path.join(self.path, key))

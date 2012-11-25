@@ -1,6 +1,9 @@
 nav {
 	font-size: 80%;
-	float: right;
+	background: lightcyan;
+	position: fixed;
+	top: 1em;
+	right: 1em;
 }
 h1 {
 	color: grey;

@@ -19,6 +19,9 @@ Pages.data = {{ allpages | tojson | safe }};
 	</head>
 	<body>
 		<nav id="nav">
+			<span id="page-actions">
+				<a id="mode-switch" title="Switch from view to edit mode (and viceversa)">Edit/view</a>
+			</span>
 			<ul id="pagelist">
 			</ul>
 		</nav>
@@ -30,6 +33,7 @@ Pages.data = {{ allpages | tojson | safe }};
 					<div id="wmd-button-bar"></div>
 					<textarea class="wmd-input" id="wmd-input"></textarea>
 				</div>
+				<button id="submit">Submit</button>
 				<div id="wmd-preview" class="wmd-panel wmd-preview"></div>
 			</div>
 		</div>

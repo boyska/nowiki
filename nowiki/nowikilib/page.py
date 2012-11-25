@@ -7,6 +7,12 @@ class Page:
         cls.db = FlatDB(dbpath)
 
     @classmethod
+    def delete(cls, slug):
+        if not cls.exists(slug):
+            raise ValueError('page not found')
+        return cls.db.delete(slug)
+
+    @classmethod
     def get(cls, slug):
         '''Returns the content of the page. If it does not exists,
         raises ValueError'''

@@ -23,6 +23,13 @@ def get_page(name):
     except:
         abort(404)
 
+@app.route("/page/<name>", methods=['DELETE'])
+def delete_page(name):
+    if not Page.exists(name):
+        abort(404)
+    Page.delete(name)
+    return 'ok'
+    
 @app.route("/page/<name>", methods=['PUT'])
 def set_page(name):
     if not Page.exists(name):
