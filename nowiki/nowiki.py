@@ -82,7 +82,6 @@ def new_page():
     return 'ok'
 
 
-Page.config(config.get('nowiki', 'datapath'))
 if __name__ == '__main__':
     import os
     ownpath = os.path.abspath(os.path.join(os.getcwd(),\
@@ -92,6 +91,7 @@ if __name__ == '__main__':
     print os.listdir(os.getcwd())
     sys.argv[0] = 'nowiki.py'
     config.read(options.config_file)
+    Page.config(config.get('nowiki', 'datapath'))
     app.debug = config.get('daemon', 'debug')
     app.run(port=config.getint('daemon', 'port'),\
             host=config.get('daemon', 'host'))
