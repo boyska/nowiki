@@ -1,18 +1,4 @@
 import sys, os, os.path
-if __name__ == '__main__':
-    #TODO: better option handling
-    from optparse import OptionParser
-    parser = OptionParser()
-    parser.add_option("-c", "--config-file", dest="config_file",
-            help="Path to config file", metavar="FILE", default="nowiki.cfg")
-    parser.add_option("-v", "--virtual-env", dest="virtualenv_path",
-            help="Path to your virtualenv", metavar="DIR")
-    (options, args) = parser.parse_args()
-    if options.virtualenv_path:
-        print 'entering ve'
-        activate = os.path.join(options.virtualenv_path, 'bin/activate_this.py')
-        execfile(activate, dict(__file__=activate))
-
 
 from ConfigParser import SafeConfigParser
 from StringIO import StringIO
@@ -21,6 +7,7 @@ from flask import Flask, abort, jsonify, render_template, request, Response
 from nowikilib.page import Page
 #from nowikilib import page
 app = Flask(__name__, template_folder='views')
+global config
 config = SafeConfigParser()
 #set default configuration
 config.readfp(StringIO('''
@@ -80,19 +67,3 @@ def new_page():
     page = Page(name, content)
     page.save()
     return 'ok'
-
-
-if __name__ == '__main__':
-    import os
-    ownpath = os.path.abspath(os.path.join(os.getcwd(),\
-            os.path.dirname(sys.argv[0])))
-    print 'chdirring to', ownpath
-    os.chdir(ownpath)
-    print os.listdir(os.getcwd())
-    sys.argv[0] = 'nowiki.py'
-    config.read(options.config_file)
-    Page.config(config.get('nowiki', 'datapath'))
-    app.debug = config.get('daemon', 'debug')
-    app.run(port=config.getint('daemon', 'port'),\
-            host=config.get('daemon', 'host'))
-
