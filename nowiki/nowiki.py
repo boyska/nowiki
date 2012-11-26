@@ -1,10 +1,16 @@
 import sys, os, os.path
 if __name__ == '__main__':
     #TODO: better option handling
-    if(len(sys.argv) > 1):
-        ve = sys.argv[1]
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option("-c", "--config-file", dest="config_file",
+            help="Path to config file", metavar="FILE", default="nowiki.cfg")
+    parser.add_option("-v", "--virtual-env", dest="virtualenv_path",
+            help="Path to your virtualenv", metavar="DIR")
+    (options, args) = parser.parse_args()
+    if options.virtualenv_path:
         print 'entering ve'
-        activate = os.path.join(ve, './bin/activate_this.py')
+        activate = os.path.join(options.virtualenv_path, 'bin/activate_this.py')
         execfile(activate, dict(__file__=activate))
 
 
@@ -85,7 +91,7 @@ if __name__ == '__main__':
     os.chdir(ownpath)
     print os.listdir(os.getcwd())
     sys.argv[0] = 'nowiki.py'
-    config.read('nowiki.cfg') #TODO: make it choosable with -c
+    config.read(options.config_file)
     app.debug = config.get('daemon', 'debug')
     app.run(port=config.getint('daemon', 'port'),\
             host=config.get('daemon', 'host'))
