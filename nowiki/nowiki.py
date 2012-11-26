@@ -1,9 +1,22 @@
 import sys
+from ConfigParser import SafeConfigParser
+from StringIO import StringIO
 
-from flask import Flask, abort, jsonify, render_template, request
+from flask import Flask, abort, jsonify, render_template, request, Response
 from nowikilib.page import Page
 #from nowikilib import page
 app = Flask(__name__, template_folder='views')
+config = SafeConfigParser()
+config.readfp(StringIO('''
+[nowiki]
+datapath="data"
+
+[daemon]
+debug=0
+port=5000
+host=127.0.0.1
+page_get=1
+    '''))
 
 @app.route("/")
 def get_home_html():
@@ -11,15 +24,18 @@ def get_home_html():
     return render_template('index.src.htm', allpages = Page.get_all())
 
 
-#TODO: move to Pluggable Views (http://flask.pocoo.org/docs/views/ )
+#TODO: move to a blueprint
 @app.route("/page/")
 def get_pages():
     return jsonify(Page.get_all())
+
 @app.route("/page/<name>")
 def get_page(name):
+    if not config.getboolean('daemon', 'page_get'):
+        abort(405)
     try:
-        return Page.get(name)
-    except:
+        return Response(Page.get(name), mimetype='text/plain')
+    except ValueError:
         abort(404)
 
 @app.route("/page/<name>", methods=['DELETE'])
@@ -52,10 +68,11 @@ def new_page():
 
 Page.config('data/')
 if __name__ == '__main__':
-    import os,sys
+    import os
     os.chdir(sys.path[0])
     sys.argv[0] = 'nowiki.py'
-    #TODO: configuration logic
-    app.debug = True
-    app.run(port=5000, host="127.0.0.1")
+    config.read('nowiki.cfg') #TODO: make it choosable with -c
+    app.debug = config.get('daemon', 'debug')
+    app.run(port=config.getint('daemon', 'port'),\
+            host=config.get('daemon', 'host'))
 
