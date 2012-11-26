@@ -66,7 +66,7 @@ def new_page():
     return 'ok'
 
 
-Page.config('data/')
+Page.config(config.get('nowiki', 'datapath'))
 if __name__ == '__main__':
     import os
     os.chdir(sys.path[0])
