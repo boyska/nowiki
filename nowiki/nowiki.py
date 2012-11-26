@@ -1,10 +1,9 @@
 import sys
 
 from flask import Flask, abort, jsonify, render_template, request
-sys.path.append('..')
 from nowikilib.page import Page
 #from nowikilib import page
-app = Flask(__name__, template_folder='../views')
+app = Flask(__name__, template_folder='views')
 
 @app.route("/")
 def get_home_html():
@@ -51,8 +50,12 @@ def new_page():
     return 'ok'
 
 
-Page.config('../data/') #TODO: fix this uglyness
+Page.config('data/')
 if __name__ == '__main__':
+    import os,sys
+    os.chdir(sys.path[0])
+    sys.argv[0] = 'nowiki.py'
+    #TODO: configuration logic
     app.debug = True
-    app.run()
+    app.run(port=5000, host="127.0.0.1")
 
