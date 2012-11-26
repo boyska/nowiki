@@ -1,4 +1,13 @@
-import sys
+import sys, os, os.path
+if __name__ == '__main__':
+    #TODO: better option handling
+    if(len(sys.argv) > 1):
+        ve = sys.argv[1]
+        print 'entering ve'
+        activate = os.path.join(ve, './bin/activate_this.py')
+        execfile(activate, dict(__file__=activate))
+
+
 from ConfigParser import SafeConfigParser
 from StringIO import StringIO
 
@@ -7,9 +16,10 @@ from nowikilib.page import Page
 #from nowikilib import page
 app = Flask(__name__, template_folder='views')
 config = SafeConfigParser()
+#set default configuration
 config.readfp(StringIO('''
 [nowiki]
-datapath="data"
+datapath=data
 
 [daemon]
 debug=0
@@ -69,7 +79,11 @@ def new_page():
 Page.config(config.get('nowiki', 'datapath'))
 if __name__ == '__main__':
     import os
-    os.chdir(sys.path[0])
+    ownpath = os.path.abspath(os.path.join(os.getcwd(),\
+            os.path.dirname(sys.argv[0])))
+    print 'chdirring to', ownpath
+    os.chdir(ownpath)
+    print os.listdir(os.getcwd())
     sys.argv[0] = 'nowiki.py'
     config.read('nowiki.cfg') #TODO: make it choosable with -c
     app.debug = config.get('daemon', 'debug')
