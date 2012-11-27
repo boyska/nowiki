@@ -1,0 +1,32 @@
+#!/bin/bash
+
+DAEMON="/usr/bin/python /opt/nowiki/nowiki/nowiki.py"
+CONFIG="/etc/nowiki.cfg"
+ARGS="--virtual-env /opt/nowiki/nowiki_ve --config-file $CONFIG"
+PIDFILE=/opt/nowiki/nowiki.pid
+USER=nowiki
+GROUP=nowiki
+
+case "$1" in
+  start)
+    echo "Starting server"
+    /sbin/start-stop-daemon --start --pidfile $PIDFILE \
+        --user $USER --group $GROUP \
+        -b --make-pidfile \
+        --chuid $USER \
+        --exec $DAEMON -- $ARGS
+    ;;
+  stop)
+    echo "Stopping server"
+    /sbin/start-stop-daemon --stop --verbose \
+        --user $USER --group $GROUP \
+        --chuid $USER \
+        --exec $DAEMON -- $ARGS
+    ;;
+  *)
+    echo "Usage: /etc/init.d/$(basename $0) {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
